@@ -238,13 +238,16 @@ class WarpingMixup(AbstractMixup):
     def __init__(
         self,
         alpha: float = 1.0,
-        mode: str = "batch",
+        isobatch: bool = True,
         num_classes: int = 1000,
         apply_kernel: bool = True,
         tau_max: float = 1.0,
         tau_std: float = 0.5,
     ) -> None:
         """Kernel Warping Mixup method from Bouniot et al.
+
+        Note: The original implementation used :attr:`mode`=``"batch"`` by default, and was
+            converted to :attr:`isobatch`=`True` for consistency.
 
         Reference:
             "Tailoring Mixup to Data using Kernel Warping functions" (2023)
@@ -256,7 +259,7 @@ class WarpingMixup(AbstractMixup):
                 "torch_uncertainty with the all option:"
                 """pip install -U "torch_uncertainty[all]"."""
             )
-        super().__init__(alpha=alpha, mode=mode, num_classes=num_classes)
+        super().__init__(alpha=alpha, isobatch=isobatch, num_classes=num_classes)
         self.apply_kernel = apply_kernel
         self.tau_max = tau_max
         self.tau_std = tau_std
