@@ -222,6 +222,9 @@ class MixupMP(AbstractMixup):
             When training MixupMP models with r != 1, you should use the MixupMPLoss
             available in the losses/classification file.
 
+        See Also:
+            torch_uncertainty/losses/classification.py — MixupMPLoss implementation.
+
         Reference:
             "Posterior Uncertainty Quantification in Neural Networks using Data Augmentation" (AISTATS 2024)
             http://arxiv.org/abs/2403.12729.
