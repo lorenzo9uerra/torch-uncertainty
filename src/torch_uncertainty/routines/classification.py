@@ -57,6 +57,7 @@ class ClassificationRoutine(LightningModule):
         model: nn.Module,
         num_classes: int,
         loss: nn.Module | None = None,
+        *,
         is_ensemble: bool = False,
         num_tta: int = 1,
         format_batch_fn: nn.Module | None = None,

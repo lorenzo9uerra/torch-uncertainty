@@ -317,9 +317,9 @@ class FocalLoss(nn.Module):
 class BCEWithLogitsLSLoss(nn.BCEWithLogitsLoss):
     def __init__(
         self,
+        label_smoothing: float = 0.0,
         weight: Tensor | None = None,
         reduction: str = "mean",
-        label_smoothing: float = 0.0,
     ) -> None:
         """Binary Cross Entropy with Logits Loss with label smoothing.
 
@@ -365,11 +365,12 @@ class BCEWithLogitsLSLoss(nn.BCEWithLogitsLoss):
 class CrossEntropyMaxSupLoss(nn.CrossEntropyLoss):
     def __init__(
         self,
+        label_smoothing: float = 0,
+        max_sup: float = 0,
+        *,
         weight: Tensor | None = None,
         size_average=None,
         reduction: str | None = "mean",
-        label_smoothing: float = 0,
-        max_sup: float = 0,
     ) -> None:
         """Max suppression cross-entropy loss.
 
@@ -407,11 +408,10 @@ class CrossEntropyMaxSupLoss(nn.CrossEntropyLoss):
 class MixupMPLoss(nn.CrossEntropyLoss):
     def __init__(
         self,
-        *,
+        mixup_ratio: float = 1.0,
         weight: Tensor | None = None,
         ignore_index: int | None = None,
         reduction: str = "mean",
-        mixup_ratio: float = 1.0,
     ) -> None:
         """MixupMP loss from Wu & Williamson.
 
@@ -427,13 +427,13 @@ class MixupMPLoss(nn.CrossEntropyLoss):
         ratio r.
 
         Args:
+            mixup_ratio (float): Ratio of number of mixup samples vs normal samples
+                output by the MixupMP transform. This should match the transform's
+                :attr:`mixup_ratio` hyperparameter. Defaults to ``1.0`` (equal weighting).
             weight (Tensor | None): a manual rescaling weight given to each class.
             ignore_index (int | None): Specifies a target value that is ignored
                 and does not contribute to the input gradient.
             reduction (str): Specifies the reduction to apply to the output: 'none'|'mean'|'sum'.
-            mixup_ratio (float): Ratio of number of mixup samples vs normal samples
-                output by the MixupMP transform. This should match the transform's
-                :attr:`mixup_ratio` hyperparameter. Defaults to ``1.0`` (equal weighting).
 
         See Also:
             torch_uncertainty/transforms/mixup.py — MixupMP transform implementation.
