@@ -196,20 +196,6 @@ class Mixup(AbstractMixup):
 
 
 class MixupMP(AbstractMixup):
-    """MixupMP method from Wu & Williamson.
-
-    In this implementation, we return both the mixuped and the normal
-    inputs and targets, all concatenated.
-
-    Warning:
-        When training MixupMP models with r != 1, you should use the MixupMPLoss
-        available in the losses/classification file.
-
-    Reference:
-        "Posterior Uncertainty Quantification in Neural Networks using Data Augmentation" (AISTATS 2024)
-        http://arxiv.org/abs/2403.12729.
-    """
-
     def __init__(
         self,
         alpha: float,
@@ -218,7 +204,31 @@ class MixupMP(AbstractMixup):
         isobatch: bool = False,
         **kwargs: Any,
     ) -> None:
+        """MixupMP method from Wu & Williamson.
+
+        In this implementation, we return both the mixuped and the normal
+        inputs and targets, all concatenated.
+
+        Args:
+            alpha (float, optional): Mixup alpha.
+            num_classes (int): Number of classes.
+            mixup_ratio (float): Ratio of the number of mixup-ed pairs and normal pairs. Defaults
+                to ``1``. This parameter is named "r" in the paper.
+            isobatch (bool, optional): Whether to use a single coefficient for the whole batch
+                instead of for each pair. Defaults to ``False``.
+            **kwargs (Any): Keyword arguments for compatibility.
+
+        Warning:
+            When training MixupMP models with r != 1, you should use the MixupMPLoss
+            available in the losses/classification file.
+
+        Reference:
+            "Posterior Uncertainty Quantification in Neural Networks using Data Augmentation" (AISTATS 2024)
+            http://arxiv.org/abs/2403.12729.
+        """
         super().__init__(alpha, num_classes, isobatch, **kwargs)
+        if mixup_ratio <= 0:
+            raise ValueError(f"mixup_ratio must be strictly positive. Got {mixup_ratio}.")
         self.mixup_ratio = mixup_ratio
 
     def __call__(
@@ -228,10 +238,26 @@ class MixupMP(AbstractMixup):
         feats: Tensor | None = None,
         warp_param: float | None = None,
     ) -> tuple[Tensor, Tensor]:
-        lam, index = self._get_params(x.size()[0], x.device)
+        batch_size = x.size(0)
+        device = x.device
+        lam, index = self._get_params(batch_size, device)
         mixed_x = self._linear_mixing(lam, x, index)
         mixed_y = self._mix_target(lam, y, index)
-        return torch.cat([mixed_x, x]), torch.cat([mixed_y, y])
+        r = self.mixup_ratio
+
+        if r <= 1.0:
+            # keep all normal samples, subsample mixup samples
+            num_mixup = max(1, round(r * batch_size))
+            mix_idx = torch.randperm(batch_size, device=device)[:num_mixup]
+            out_x = torch.cat([mixed_x[mix_idx], x], dim=0)
+            out_y = torch.cat([mixed_y[mix_idx], y], dim=0)
+        else:
+            # keep all mixup samples, subsample normal samples
+            num_normal = max(1, round(batch_size / r))
+            norm_idx = torch.randperm(batch_size, device=device)[:num_normal]
+            out_x = torch.cat([mixed_x, x[norm_idx]], dim=0)
+            out_y = torch.cat([mixed_y, y[norm_idx]], dim=0)
+        return out_x, out_y
 
 
 class MixupIO(AbstractMixup):
