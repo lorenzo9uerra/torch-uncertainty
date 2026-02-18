@@ -324,6 +324,26 @@ def lpbnn_resnet(
     groups: int = 1,
     style: Literal["imagenet", "cifar"] = "imagenet",
 ) -> _LPBNNResNet:
+    """LPBNN version of ResNet.
+
+    Args:
+        in_channels (int): Number of input channels.
+        num_classes (int): Number of classes to predict.
+        arch (int): The architecture of the ResNet.
+        dropout_rate (float): Dropout rate. Defaults to ``0``.
+        conv_bias (bool): Whether to use bias in convolutions. Defaults to
+            ``True``.
+        num_estimators (int): Number of estimators in the ensemble.
+        width_multiplier (float): Width multiplier. Defaults to ``1``.
+        groups (int): Number of ReNet groups.
+        style (bool, optional): Whether to use the ImageNet or CIFAR
+            structure. Defaults to ``imagenet``.
+        linear_implementation (str, optional): Implementation of the
+            packed linear layer. Defaults to ``"conv1d"``.
+
+    Returns:
+        _PackedResNet: An LPBNN ResNet.
+    """
     block = _BasicBlock if arch in [18, 20, 34, 44, 56, 110, 1202] else _Bottleneck
     in_planes = 16 if arch in [20, 44, 56, 110, 1202] else 64
     return _LPBNNResNet(

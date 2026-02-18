@@ -411,8 +411,8 @@ def packed_resnet(
         gamma (int): Number of groups within each estimator.
         width_multiplier (float): Width multiplier. Defaults to ``1``.
         groups (int): Number of groups within each estimator group.
-        style (bool, optional): Whether to use the ImageNet
-            structure. Defaults to ``True``.
+        style (bool, optional): Whether to use the ImageNet or CIFAR
+            structure. Defaults to ``imagenet``.
         normalization_layer (nn.Module, optional): Normalization layer.
         pretrained (bool, optional): Whether to load pretrained weights.
             Defaults to ``False``.
