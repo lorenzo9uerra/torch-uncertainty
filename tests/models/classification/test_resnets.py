@@ -9,7 +9,8 @@ from torch_uncertainty.models.classification import (
     packed_resnet,
     resnet,
 )
-from torch_uncertainty.models.classification.resnet.utils import get_resnet_num_blocks, ResNetStyle
+from torch_uncertainty.models.classification.resnet.utils import ResNetStyle, get_resnet_num_blocks
+
 
 class TestResnet:
     """Testing the ResNet classes."""
@@ -77,6 +78,7 @@ class TestBatchedResnet:
         with torch.no_grad():
             model(torch.randn(1, 1, 32, 32))
 
+
 class TestLPBNNResnet:
     """Testing the ResNet LPBNN class."""
 
@@ -87,6 +89,7 @@ class TestLPBNNResnet:
         model = lpbnn_resnet(1, 10, 50, 2, conv_bias=False, style="cifar")
         with torch.no_grad():
             model(torch.randn(1, 1, 32, 32))
+
 
 class TestMIMOResnet:
     """Testing the ResNet MIMO class."""
