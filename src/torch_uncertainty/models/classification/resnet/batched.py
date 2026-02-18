@@ -342,9 +342,7 @@ def batched_resnet(
     Returns:
         _BatchedResNet: A BatchEnsemble-style ResNet.
     """
-    if isinstance(style, str):
-        style = ResNetStyle(style)
-
+    style = ResNetStyle(style)
     block = _BasicBlock if arch in [18, 20, 34, 44, 56, 110, 1202] else _Bottleneck
     in_planes = 16 if arch in [20, 44, 56, 110, 1202] else 64
     return _BatchedResNet(

@@ -16,7 +16,9 @@ class TestResnet:
     """Testing the ResNet classes."""
 
     def test_main(self) -> None:
-        resnet(1, 10, arch=18, conv_bias=True, style="cifar")
+        model = resnet(1, 10, arch=18, conv_bias=True, style="cifar")
+        with torch.no_grad():
+            model(torch.randn(1, 1, 32, 32))
         model = resnet(1, 10, arch=50, style=ResNetStyle.CIFAR)
         with torch.no_grad():
             model(torch.randn(1, 1, 32, 32))
