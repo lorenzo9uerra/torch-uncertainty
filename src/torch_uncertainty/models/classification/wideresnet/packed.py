@@ -5,6 +5,7 @@ from torch import Tensor, nn
 from torch.nn.functional import relu
 
 from torch_uncertainty.layers import PackedConv2d, PackedLinear
+from torch_uncertainty.models.classification.resnet.utils import ResNetStyle
 
 __all__ = [
     "packed_wideresnet28x10",
@@ -109,7 +110,7 @@ class _PackedWideResNet(nn.Module):
             64 * widen_factor,
         ]
 
-        if style == "imagenet":
+        if style == ResNetStyle.IMAGENET:
             self.conv1 = PackedConv2d(
                 in_channels,
                 num_stages[0],
@@ -123,7 +124,7 @@ class _PackedWideResNet(nn.Module):
                 bias=conv_bias,
                 first=True,
             )
-        elif style == "cifar":
+        else:  # style == "cifar":
             self.conv1 = PackedConv2d(
                 in_channels,
                 num_stages[0],
@@ -137,12 +138,10 @@ class _PackedWideResNet(nn.Module):
                 bias=conv_bias,
                 first=True,
             )
-        else:
-            raise ValueError(f"Unknown WideResNet style: {style}. ")
 
         self.bn1 = normalization_layer(num_stages[0] * alpha)
 
-        if style == "imagenet":
+        if style == ResNetStyle.IMAGENET:
             self.optional_pool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         else:
             self.optional_pool = nn.Identity()
@@ -261,7 +260,7 @@ def packed_wideresnet28x10(
     conv_bias: bool = True,
     dropout_rate: float = 0.3,
     groups: int = 1,
-    style: Literal["imagenet", "cifar"] = "imagenet",
+    style: ResNetStyle | Literal["imagenet", "cifar"] = ResNetStyle.IMAGENET,
     activation_fn: Callable = relu,
     normalization_layer: type[nn.Module] = nn.BatchNorm2d,
 ) -> _PackedWideResNet:
@@ -277,8 +276,8 @@ def packed_wideresnet28x10(
         conv_bias (bool): Whether to use bias in convolutions. Defaults to
             ``True``.
         dropout_rate (float, optional): Dropout rate. Defaults to ``0.3``.
-        style (bool, optional): Whether to use the ImageNet
-            structure. Defaults to ``True``.
+        style (ResNetStyle | Literal["imagenet", "cifar"]): Whether to use the ImageNet or CIFAR
+            structure. Defaults to ``ResNetStyle.IMAGENET``.
         activation_fn (Callable, optional): Activation function. Defaults to
             ``torch.nn.functional.relu``.
         normalization_layer (nn.Module, optional): Normalization layer.

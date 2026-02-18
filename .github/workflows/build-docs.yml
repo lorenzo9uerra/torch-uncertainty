@@ -45,7 +45,7 @@ jobs:
       - name: Sphinx build
         if: github.event.pull_request.draft == false
         run: |
-          cd docs && make clean && make html
+          cd docs && make html
 
       - name: Deploy on GitHub pages
         uses: peaceiris/actions-gh-pages@v4
