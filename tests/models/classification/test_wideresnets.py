@@ -29,6 +29,16 @@ class TestPackedResnet:
     """Testing the WideResNet packed class."""
 
     def test_main(self) -> None:
+        packed_wideresnet28x10(
+            in_channels=1,
+            num_estimators=2,
+            alpha=2,
+            groups=1,
+            gamma=1,
+            num_classes=10,
+            style="cifar",
+            conv_bias=False,
+        )
         model = packed_wideresnet28x10(
             in_channels=1,
             num_estimators=2,
@@ -58,6 +68,15 @@ class TestMaskedWide:
     """Testing the WideResNet masked class."""
 
     def test_main(self) -> None:
+        masked_wideresnet28x10(
+            in_channels=1,
+            num_classes=10,
+            num_estimators=2,
+            scale=2.0,
+            groups=1,
+            style="cifar",
+            conv_bias=False,
+        )
         model = masked_wideresnet28x10(
             in_channels=1,
             num_classes=10,
@@ -86,6 +105,14 @@ class TestBatchedWide:
     """Testing the WideResNet batched class."""
 
     def test_main(self) -> None:
+        batched_wideresnet28x10(
+            in_channels=1,
+            num_classes=10,
+            num_estimators=2,
+            groups=1,
+            style="cifar",
+            conv_bias=False,
+        )
         model = batched_wideresnet28x10(
             in_channels=1,
             num_classes=10,
