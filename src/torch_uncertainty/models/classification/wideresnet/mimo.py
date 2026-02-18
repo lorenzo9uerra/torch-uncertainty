@@ -78,7 +78,7 @@ def mimo_wideresnet28x10(
             Defaults to ``torch.nn.BatchNorm2d``.
 
     Returns:
-        _PackedWideResNet: A MIMO Wide-ResNet-28x10.
+        _MIMOWideResNet: A MIMO Wide-ResNet-28x10.
     """
     return _MIMOWideResNet(
         depth=28,
