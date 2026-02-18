@@ -1,3 +1,5 @@
+from enum import Enum
+
 _RESNET_BLOCKS: dict[int, list[int]] = {
     18: [2, 2, 2, 2],
     20: [3, 3, 3],
@@ -10,6 +12,11 @@ _RESNET_BLOCKS: dict[int, list[int]] = {
     152: [3, 8, 36, 3],
     1202: [200, 200, 200],
 }
+
+
+class ResNetStyle(str, Enum):
+    IMAGENET = "imagenet"
+    CIFAR = "cifar"
 
 
 def get_resnet_num_blocks(arch: int) -> list[int]:
