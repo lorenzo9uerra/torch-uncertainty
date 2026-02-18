@@ -145,12 +145,9 @@ def _abnn_checks(
     num_models,
     num_samples,
     base_lr,
-    batch_size,
 ) -> None:
     if random_prior < 0:
         raise ValueError(f"random_prior must be greater than 0. Got {random_prior}.")
-    if batch_size < 1:
-        raise ValueError(f"batch_size must be greater than 0. Got {batch_size}.")
     if max_epochs < 1:
         raise ValueError(f"epoch must be greater than 0. Got {max_epochs}.")
     if num_models < 1:
