@@ -33,7 +33,7 @@ class TestPackedResnet:
     """Testing the WideResNet packed class."""
 
     def test_main(self) -> None:
-        packed_wideresnet28x10(
+        model = packed_wideresnet28x10(
             in_channels=1,
             num_estimators=2,
             alpha=2,
@@ -43,6 +43,8 @@ class TestPackedResnet:
             style="imagenet",
             conv_bias=False,
         )
+        with torch.no_grad():
+            model(torch.randn(1, 1, 32, 32))
 
         with pytest.raises(ValueError):
             _PackedWideResNet(
@@ -71,7 +73,7 @@ class TestMaskedWide:
     """Testing the WideResNet masked class."""
 
     def test_main(self) -> None:
-        masked_wideresnet28x10(
+        model = masked_wideresnet28x10(
             in_channels=1,
             num_classes=10,
             num_estimators=2,
@@ -80,6 +82,8 @@ class TestMaskedWide:
             style="imagenet",
             conv_bias=False,
         )
+        with torch.no_grad():
+            model(torch.randn(1, 1, 32, 32))
 
         with pytest.raises(ValueError):
             _MaskedWideResNet(
@@ -107,7 +111,7 @@ class TestBatchedWide:
     """Testing the WideResNet batched class."""
 
     def test_main(self) -> None:
-        batched_wideresnet28x10(
+        model = batched_wideresnet28x10(
             in_channels=1,
             num_classes=10,
             num_estimators=2,
@@ -115,6 +119,8 @@ class TestBatchedWide:
             style="imagenet",
             conv_bias=False,
         )
+        with torch.no_grad():
+            model(torch.randn(1, 1, 32, 32))
 
         with pytest.raises(ValueError):
             _BatchWideResNet(
@@ -136,7 +142,9 @@ class TestMIMOWide:
 
     def test_main(self) -> None:
         model = mimo_wideresnet28x10(in_channels=1, num_classes=10, num_estimators=2, style="cifar")
-        model(torch.rand((2, 1, 28, 28)))
+
+        with torch.no_grad():
+            model(torch.rand((2, 1, 28, 28)))
 
         with pytest.raises(ValueError):
             _MIMOWideResNet(

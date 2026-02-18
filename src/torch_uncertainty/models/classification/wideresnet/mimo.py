@@ -6,6 +6,8 @@ from einops import rearrange
 from torch import nn
 from torch.nn.functional import relu
 
+from torch_uncertainty.models.classification.resnet.utils import ResNetStyle
+
 from .std import _WideResNet
 
 __all__ = [
@@ -56,7 +58,7 @@ def mimo_wideresnet28x10(
     conv_bias: bool = True,
     dropout_rate: float = 0.3,
     groups: int = 1,
-    style: Literal["imagenet", "cifar"] = "imagenet",
+    style: ResNetStyle | Literal["imagenet", "cifar"] = ResNetStyle.IMAGENET,
     activation_fn: Callable = relu,
     normalization_layer: type[nn.Module] = nn.BatchNorm2d,
 ) -> _MIMOWideResNet:
@@ -70,8 +72,8 @@ def mimo_wideresnet28x10(
         conv_bias (bool): Whether to use bias in convolutions. Defaults to
             ``True``.
         dropout_rate (float, optional): Dropout rate. Defaults to ``0.3``.
-        style (str, optional): Whether to use the ImageNet or CIFAR
-            structure. Defaults to ``imagenet``.
+        style (ResNetStyle | Literal["imagenet", "cifar"]): Whether to use the ImageNet or CIFAR
+            structure. Defaults to ``ResNetStyle.IMAGENET``.
         activation_fn (Callable, optional): Activation function. Defaults to
             ``torch.nn.functional.relu``.
         normalization_layer (nn.Module, optional): Normalization layer.
