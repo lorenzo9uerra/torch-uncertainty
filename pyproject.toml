@@ -47,7 +47,7 @@ dev = [
   { include-group = "docs" },
 ]
 
-lint = ["ruff==0.14.11", "pre-commit", "pre-commit-hooks"]
+lint = ["ruff==0.15.1", "pre-commit", "pre-commit-hooks"]
 test = ["torch_uncertainty[all]", "pytest-cov"]
 docs = [
   "sphinx==7.4.7",
@@ -104,9 +104,6 @@ explicit = true
 homepage = "https://torch-uncertainty.github.io/"
 documentation = "https://torch-uncertainty.github.io/quickstart.html"
 repository = "https://github.com/torch-uncertainty/torch-uncertainty.git"
-
-[tool.flit.module]
-name = "torch_uncertainty"
 
 [tool.ruff]
 line-length = 100
