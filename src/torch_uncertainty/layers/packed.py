@@ -134,7 +134,7 @@ class PackedLinear(nn.Module):
         # fix if not divisible by groups
         if extended_in_features % actual_groups:
             extended_in_features += num_estimators - extended_in_features % (actual_groups)
-        if extended_out_features % num_estimators * gamma:
+        if extended_out_features % (num_estimators * gamma):
             extended_out_features += num_estimators - extended_out_features % (
                 num_estimators * gamma
             )
