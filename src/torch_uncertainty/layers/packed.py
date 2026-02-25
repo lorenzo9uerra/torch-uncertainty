@@ -1438,7 +1438,7 @@ class PackedTransformerDecoderLayer(nn.Module):
             self.norm3 = PackedLayerNorm(
                 embed_dim=d_model,
                 num_estimators=num_estimators,
-                alpha=num_estimators,
+                alpha=alpha,
                 eps=layer_norm_eps,
                 **factory_kwargs,
             )
