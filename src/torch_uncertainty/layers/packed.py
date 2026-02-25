@@ -1195,13 +1195,22 @@ class PackedTransformerEncoderLayer(nn.Module):
                 **factory_kwargs,
             )
 
-        self.norm2 = PackedLayerNorm(
-            embed_dim=d_model,
-            num_estimators=num_estimators,
-            alpha=alpha,
-            eps=layer_norm_eps,
-            **factory_kwargs,
-        )
+        if not self.norm_first and last:
+            self.norm2 = PackedLayerNorm(
+                embed_dim=d_model,
+                num_estimators=num_estimators,
+                alpha=num_estimators,
+                eps=layer_norm_eps,
+                **factory_kwargs,
+            )
+        else:
+            self.norm2 = PackedLayerNorm(
+                embed_dim=d_model,
+                num_estimators=num_estimators,
+                alpha=alpha,
+                eps=layer_norm_eps,
+                **factory_kwargs,
+            )
 
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
@@ -1430,7 +1439,7 @@ class PackedTransformerDecoderLayer(nn.Module):
             self.norm3 = PackedLayerNorm(
                 embed_dim=d_model,
                 num_estimators=num_estimators,
-                alpha=alpha,
+                alpha=num_estimators,
                 eps=layer_norm_eps,
                 **factory_kwargs,
             )
