@@ -15,7 +15,7 @@ def check_packed_parameters_consistency(alpha: float, gamma: int, num_estimators
     """Check the consistency of the parameters of the Packed-Ensembles layers.
 
     Args:
-        alpha (int): The width multiplier of the layer.
+        alpha (float): The width multiplier of the layer.
         gamma (int): The number of groups in the ensemble.
         num_estimators (int): The number of estimators in the ensemble.
     """
@@ -64,7 +64,7 @@ class PackedLinear(nn.Module):
             alpha (float): The width multiplier of the linear layer.
             num_estimators (int): The number of estimators grouped in the layer.
             gamma (int, optional): Defaults to ``1``.
-            bias (bool, optional): It ``True``, adds a learnable bias to the
+            bias (bool, optional): If ``True``, adds a learnable bias to the
                 output. Defaults to ``True``.
             first (bool, optional): Whether this is the first layer of the
                 network. Defaults to ``False``.
@@ -103,7 +103,7 @@ class PackedLinear(nn.Module):
             :math:`\frac{\text{in_features}}{\text{num_estimators}}` features,
             so when using :attr:`gamma` you should make sure that
             :attr:`in_features` and :attr:`out_features` are both divisible by
-            :attr:`n_estimators` :math:`\times`:attr:`gamma`. However, the
+            :attr:`num_estimators` :math:`\times`:attr:`gamma`. However, the
             number of input and output features will be changed to comply with
             this constraint.
         """
@@ -111,7 +111,7 @@ class PackedLinear(nn.Module):
 
         if implementation not in ["sparse", "full", "einsum", "conv1d"]:
             raise ValueError(
-                f"Unknown implementation: {implementation} for PackedLinear"
+                f"Unknown implementation: {implementation} for PackedLinear. "
                 "Available implementations are: 'sparse', 'full', 'einsum', 'conv1d'"
             )
 
@@ -771,7 +771,7 @@ class PackedMultiheadAttention(nn.Module):
             gamma (int, optional): Defaults to ``1``.
             dropout (float, optional): Dropout probability on ``attn_output_weights``. Defaults to ``0.0``
                 (no dropout).
-            bias (bool, optional): Ì specified, adds bias to input / output projection layers.
+            bias (bool, optional): If specified, adds bias to input / output projection layers.
                 Defaults to ``True``.
             add_bias_kv (bool, optional): If specified, adds bias to the key and value sequences at
                 ``dim=0``. Defaults to ``False``.
@@ -941,7 +941,7 @@ class PackedMultiheadAttention(nn.Module):
                 :math:`(L, B, E_q)` when ``batch_first=False`` or :math:`(B, L, E_q)` when
                 ``batch_first=True``, where :math:`L` is the target sequence length, :math:`B` is
                 the batch size, and :math:`E_q` is the query embedding dimension ``embed_dim``.
-            key (Tensor): Key embeddingd of shape :math:`(S, E_k)` for unbatched input,
+            key (Tensor): Key embeddings of shape :math:`(S, E_k)` for unbatched input,
                 :math:`(S, B, E_k)` when ``batch_first=False`` or :math:`(B, S, E_k)` when
                 ``batch_first=True``, where :math:`S` is the source sequence length, :math:`B` is
                 the batch size and :math:`E_k` is the key embedding dimension ``kdim``.
@@ -974,7 +974,8 @@ class PackedMultiheadAttention(nn.Module):
                 ``attn_weights`` should be averaged across heads. Otherwise, ``attn_weights`` are
                 provided separately per head. Note that this flag only has an effect when
                 ``need_weights=True``. Defaults to ``True``.
-            is_causal (bool, optional): _description_. Defaults to ``False``.
+            is_causal (bool, optional): If specified, applies a causal mask as ``attn_mask``.
+                Defaults to ``False``.
 
         Warning:
             ``need_weights=True`` and therefore ``average_attn_weights`` are not supported yet thus
@@ -985,7 +986,7 @@ class PackedMultiheadAttention(nn.Module):
                 - *attn_output* (Tensor): The output tensor of shape :math:`(L, E_q)`, :math:`(L, B, E_q)`
                   or :math:`(B, L, E_q)` where :math:`L` is the target sequence length, :math:`B` is
                   the batch size, and :math:`E_q` is the embedding dimension ``embed_dim``.
-                - *attn_output_weights* (None): Always ``None`` has we do not support
+                - *attn_output_weights* (None): Always ``None`` as we do not support
                   ``need_weights=True`` yet.
         """
         is_batched = query.dim() == 3
@@ -1490,7 +1491,7 @@ class PackedTransformerDecoderLayer(nn.Module):
                 including forward and backward compatibility.
 
         Returns:
-            Tensor: The output of the encoder layer. Shape: :math:`(B, L, E)` or :math:`(L, B, E)`.
+            Tensor: The output of the decoder layer. Shape: :math:`(B, L, E)` or :math:`(L, B, E)`.
         """
         x = tgt
         if self.norm_first:
